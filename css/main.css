@@ -47,9 +47,11 @@ input[type='button']{
     padding-left:10px;
 }
 #draw-letter-area svg {
-    border:1px solid black;
     height: 240px;
     /*width:400px;*/
+}
+#draw-letter-area  {
+    border:1px solid black;
 }
 #current-word, #current-word img {
     height:240px;
@@ -72,7 +74,7 @@ input[type='button']{
 .with-margin{
     margin-left:15px;
 }
-#canvas, #finalform,.ru_info, .fr_info, #thankyou{
+#canvas, #finalform,.ru_info, .fr_info, #thankyou,#retrybutton,#finish-container{
     display:none
 }
 .error{

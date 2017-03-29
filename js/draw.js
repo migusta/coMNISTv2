@@ -192,7 +192,14 @@ function send_to_engine() {
 				showNextImage();
 			}
 			else{
-			$("#result-image").attr("src","data:image/png;base64,"+json.img);}
+			$("#result-image").attr("src","data:image/png;base64,"+json.img);
+			//hide the svg and show img
+			$("#retrybutton").show();
+			$("#submitbutton,#clearbutton").hide();
+			
+			$("#result-image").show();
+			$("#draw-letter-area svg").hide();
+		}
 		}
 	}
 	var data = JSON.stringify({"img":dataURL,"word":word, "lang":lang});
@@ -200,12 +207,19 @@ function send_to_engine() {
 	
 }
 
-function showNextImage(){
-	//hide the image and show svg
-	$("#result-image").hide();
+function enableDrawingControls(){
 	$("#draw-letter-area svg").show();
-	
+	$("#retrybutton").hide();
+	$("#submitbutton,#clearbutton").show();
+}
+function retryDrawing(){
 	clearDrawingArea();
+	enableDrawingControls();
+}
+function showNextImage(){
+	clearDrawingArea();
+	enableDrawingControls();
+	
 	var index=parseInt($("#current-word").attr("index"));
 	showWordByIndex(index+1);
 }
@@ -216,8 +230,9 @@ function showWordByIndex(index){
 	$("#current-word img").attr("src","images/"+db_QUIZ[index].img);
 }
 	else {
-		alert("no more words!");
+		$("#draw-container").hide();
 		$("#nextbutton").attr("disabled","disabled");
+		$("#finish-container").show();
 
 	}
 }

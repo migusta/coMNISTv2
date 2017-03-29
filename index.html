@@ -44,9 +44,17 @@
 		</div>
 		<div class="clear"></div>
 		<input type="button" value="Erase" id="clearbutton" onclick="clearDrawingArea()" class="main-button"/>
+		<input type="button" value="Retry" id="retrybutton" onclick="retryDrawing()" class="main-button"/>
+		
 		<input type="button" value="Submit" id="submitbutton" onclick="validate_and_save()" class="main-button">
 		
 		<input type="button" value="Next" id="nextbutton" onclick="showNextImage()" class="main-button">
+
+		<div class="clear"></div>
+		
+	</div>
+	<div id="finish-container" class="container">
+		The game is finished.
 	</div>
 	
 	<canvas id="canvas" height="240" />
