@@ -1,0 +1,31 @@
+High level description
+Show images of common things (objects, animals, body parts, colors)
+Let the user write the word in a drawing box
+If answer is correct, gets a point/reward
+If answer is not correct, show the incorrect part, and the user tries again
+
+Features
+Chose language in which user plays: writes in english/french/russian/chinese (can be extended further)
+Optional: let the user play/replay a sound corresponding to the word (hint in case doesn't know translation etc)
+
+App design
+Buttons: "Erase", "Submit", "Play sound"(optional), "Solution", "Next"
+
+Gamification elements
+Pass levels similar to comnist. Could include images specific to country, i.e. not reuse the same images for each language
+
+API
+Send image(in) + word(in) + language through HTTP POST.
+Get back word(out) recognized by application and image(out) 
+if word(in) and word(out) don't match then image(out) highlights the mistakes, otherwise it is similar to word(in)
+
+Need your suggesion 
+how to best record the words/image/sounds? Should it be an xml or json file? In any case it should be extendable easily
+
+
+Medium term thoughts:
+Develop an app focused on alphabet learning based on words common to all three languages, e.g. TIGER/TIGRE/ТИГР
+
+
+Long terms thoughts:
+Enable users to logon to record progresses

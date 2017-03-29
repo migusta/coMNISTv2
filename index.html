@@ -1,0 +1,55 @@
+<!DOCTYPE html">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>CoMNIST, learning to write made easy</title>
+	<link href="css/main.css?v=1.2" rel="stylesheet"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Barrio" rel="stylesheet">
+	<script type="text/javascript" src="js/rgbcolor.js"></script>
+	<script type="text/javascript" src="js/StackBlur.js"></script>
+	<script type="text/javascript" src="js/canvg.min.js"></script>
+	<script src="js/draw.js?v=1.2"></script>
+</head>
+
+<body>
+	<script type="text/javascript">		
+	$(document).ready(
+			function () {
+				init();
+			}
+		)
+	</script>
+	<div class="container">
+		<!--<h1>CoMNIST</h1>-->
+		<a href ="https://github.com/GregVial/CoMNIST"><img src="images/logo.png" height="100px" class="logo" /></a>
+		<a href ="https://github.com/GregVial/CoMNIST"><img src="images/logo-sm.png" height="50px" class="logo-sm" /></a>
+
+		<div class="inline-info en_info">Learning to write made easy</div>
+		<div class="clear"></div>
+	</div>
+	<div class="container" id="draw-container">
+		<div class="with-small-padding"> <span class="en_info">What you see on the picture?</span></div>
+		<div>
+			Your score: <span id="user-score">0</span>/<span id="db-length"></span>
+		</div>
+		<div id="current-word" word="" lang="">
+			<img src=""/>
+		</div>
+		<div id="draw-letter-area">
+			<svg></svg>
+			<img src="" id="result-image"/>		
+		</div>
+		<div class="clear"></div>
+		<input type="button" value="Erase" id="clearbutton" onclick="clearDrawingArea()" class="main-button"/>
+		<input type="button" value="Submit" id="submitbutton" onclick="validate_and_save()" class="main-button">
+		
+		<input type="button" value="Next" id="nextbutton" onclick="showNextImage()" class="main-button">
+	</div>
+	
+	<canvas id="canvas" height="240" />
+</body>
+
+</html>

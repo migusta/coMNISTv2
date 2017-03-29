@@ -1,0 +1,177 @@
+html, body, div, h1, h2, p {
+	margin: 0;
+	padding: 0;
+	font-weight: normal;
+}
+body{
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 300;
+	font-style: normal;
+	font-size: 18px;
+	line-height: 24px;
+}
+h1{
+	font-weight: 300;
+    font-family: 'Barrio', cursive;
+    padding-left:10px;
+}
+input[type='button']{
+    padding: 5px 10px;
+    font-size: 20px;
+    margin-top:15px;
+    display:block;
+}
+.main-button{
+    float:left;
+    margin-right:20px;
+}
+.inline-info{
+    font-size:12px;
+    float:left;
+    padding-top:75px;
+    padding-left: 15px;
+}
+.logo{
+    float:left}
+.clear{
+    clear:both;
+}
+#draw-letter-area {
+    margin-bottom: 10px;
+    float:left;
+}
+#user-rate-area{
+    float:left;
+}
+#user-rate-area div {
+    padding-left:10px;
+}
+#draw-letter-area svg {
+    border:1px solid black;
+    height: 240px;
+    /*width:400px;*/
+}
+#current-word, #current-word img {
+    height:240px;
+    width:240px;
+    float:left;
+}
+#dr-letter{
+    font-weight: bold;
+    }
+.container {
+    margin:0 auto;
+    padding-left:10px;
+}
+.with-padding{
+    padding: 30px 0;
+}
+.with-small-padding{
+    padding: 15px 0;
+}
+.with-margin{
+    margin-left:15px;
+}
+#canvas, #finalform,.ru_info, .fr_info, #thankyou{
+    display:none
+}
+.error{
+    color: red;
+}
+.fb{
+    background-image: url('../images/fb.png')   ;
+    height:32px;
+    width:32px;
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+.vk{
+    background-image: url('../images/vk.png')   ;
+    height:32px;
+    width:32px;
+    display: inline-block;
+    background-repeat: no-repeat;
+}
+#usercounter, #nextLevel{
+    display:inline-block;
+}
+#userLevelImg{
+    height:176px;
+    width:264px;
+	background-size: 264px auto;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: 15 0;  
+}
+.level_0{
+    background-image: url('../images/level_0.png')   ;
+}
+.level_1{
+    background-image: url('../images/level_1.png')   ;
+    
+}
+.level_2{
+    background-image: url('../images/level_2.png')   ;
+}
+.level_3{
+    background-image: url('../images/level_3.png')   ;
+    
+}
+.level_4{
+    background-image: url('../images/level_4.png')   ;
+}
+.level_5{
+    background-image: url('../images/level_5.png')   ;
+    
+}
+.baloons{
+    background-image: url('../images/baloons.png')   ;
+    width:100%;
+    background-repeat: x-repeat;
+    height:223px;
+    position:absolute;
+    top:-223;
+    left:0;
+    
+}
+@media (max-width: 639px) {
+.container {
+    width: 97% !important;
+}
+.logo-sm{
+    display:block;
+    float:left;
+}
+.logo{
+    display:none;
+}
+.inline-info{
+    float:left;
+    padding-top:15px;
+    padding-left: 15px;
+}
+#userLevelImg{
+    height:70px;
+    width:90px;
+    background-size: 90px auto;
+}
+#usercounter, #nextLevel, #userLevel{
+    display:block;
+}
+#user-rate-area{
+    font-size:12px;
+}
+#user-rate-area .ru_info,#user-rate-area .fr_info {
+    font-size:10px;
+}
+
+}
+@media (min-width: 640px) {
+.container {
+    width: 640px;
+}
+.logo-sm{
+    display:none;
+}
+
+}
