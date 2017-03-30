@@ -1,0 +1,16 @@
+1,1@1.ru,0
+2,2@2.ru,0
+3,3@3.ru,0
+3,3@3.ru,0
+a,a@yandex.ru,1
+b,b@b.ru,1
+1,1@1.som,2
+3,2@ys.ru,1
+,G@g.com,3
+greg,Greg_vial@hotmail.com,3
+Anna,1@y.ru,7
+greg,Greg_vial@hotmail.com,0
+g,g@g.gg,0
+Vitaly,o.vit@mail.ru,26
+g,g@g.com,3
+,,3

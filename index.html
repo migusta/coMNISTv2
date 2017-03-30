@@ -35,7 +35,13 @@
 		<div>
 			Your score: <span id="user-score">0</span>/<span id="db-length"></span>
 		</div>
-		<div id="current-word" word="" lang="">
+		<div>Change language:
+			<select id="quiz-lang" onchange="changeLanguage(this.value)">
+				<option selected value="en">English</option>
+				<option  value="ru">Russian</option>
+			</select>
+		</div>
+		<div id="current-word" word="" >
 			<img src=""/>
 		</div>
 		<div id="draw-letter-area">

@@ -4,7 +4,10 @@
 // Variables to keep track of the mouse position and left-button status
 //todo: make a db
 
-db_QUIZ=[{word:"COW",lang:"en",img: "cow.jpg"},{word:"ABBA",lang:"en",img: "abba.png"},{word:"LEG",lang:"en",img: "leg.jpg"}];
+db_QUIZ=[{word_ru:"КОРОВА",word_en:"COW",img: "cow.jpg"},
+		 {word_ru:"АББА",word_en:"ABBA",img: "abba.png"},
+		 {word_ru:"НОГА",word_en:"LEG",img: "leg.jpg"},
+		 {word_ru:"КОТ",word_en:"CAT",img: "cat.jpg"}];
 
 
 var mouseX, mouseY, mouseDown = 0;
@@ -175,7 +178,7 @@ function send_to_engine() {
 
 	var dataURL = canvas.toDataURL();
 	var word=$("#current-word").attr("word");
-	var lang=$("#current-word").attr("lang");	
+	var lang=$("#quiz-lang option:selected").val();	
 
 	xhr = new XMLHttpRequest();
 	var url = "http://35.187.34.5:5002/api/word";
@@ -225,10 +228,14 @@ function showNextImage(){
 }
 
 function showWordByIndex(index){
+	var lang=$("#quiz-lang option:selected").val();	
 	if (db_QUIZ.length>index){
-	$("#current-word").attr({"word":db_QUIZ[index].word, "lang": db_QUIZ[index].lang, "index":index});
-	$("#current-word img").attr("src","images/"+db_QUIZ[index].img);
-}
+		switch(lang){
+			case "ru": $("#current-word").attr({"word":db_QUIZ[index].word_ru, "index":index});break;
+			case "en": $("#current-word").attr({"word":db_QUIZ[index].word_en, "index":index});break;
+		}
+		$("#current-word img").attr("src","images/"+db_QUIZ[index].img);	
+	}
 	else {
 		$("#draw-container").hide();
 		$("#nextbutton").attr("disabled","disabled");
@@ -240,6 +247,15 @@ function showWordByIndex(index){
 function addUserScore(){
 	var curscore=parseInt($("#user-score").html());
 	$("#user-score").html(curscore+1);
+}
+
+function changeLanguage(lang)
+{
+	var index=parseInt($("#current-word").attr("index"));
+	switch(lang){
+			case "ru": $("#current-word").attr({"word":db_QUIZ[index].word_ru});break;
+			case "en": $("#current-word").attr({"word":db_QUIZ[index].word_en});break;
+		}
 }
 
 // function enableControls(){
