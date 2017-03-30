@@ -48,7 +48,7 @@ input[type='button']{
 }
 #draw-letter-area svg {
     height: 240px;
-    /*width:400px;*/
+    width:450px;
 }
 #draw-letter-area  {
     border:1px solid black;
@@ -139,7 +139,17 @@ input[type='button']{
 select{
     margin-bottom:5px;
 }
-@media (max-width: 639px) {
+.success {
+    background-image: url('../images/success.png')   ;
+    background-repeat: no-repeat;
+    height:32px;
+    padding-left:40px;
+    padding-right:10px;    
+    line-height: 32px;
+    color:green;float:right;
+    display:none;
+}
+@media (max-width: 699px) {
 .container {
     width: 97% !important;
 }
@@ -171,9 +181,9 @@ select{
 }
 
 }
-@media (min-width: 640px) {
+@media (min-width: 700px) {
 .container {
-    width: 640px;
+    width: 700px;
 }
 .logo-sm{
     display:none;

@@ -23,7 +23,7 @@ function draw(x, y, fMove) {
 		path = $(svg).find("path:last-child");
 		path.attr({
 			"d": "M" + x + "," + y + "L" + x + "," + y,
-			"stroke-width": 15,
+			"stroke-width": 12,
 			"fill": "transparent",
 			"stroke": "black",
 			"stroke-linecap": "round"
@@ -190,7 +190,8 @@ function send_to_engine() {
 			json=JSON.parse(json);
 			console.log("Expected word: "+word+", your word: "+json.word);
 			if(word==json.word){
-				alert("great job!");
+				$(".success").show().delay(500).fadeOut();
+
 				addUserScore();
 				showNextImage();
 			}
