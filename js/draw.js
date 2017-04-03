@@ -188,7 +188,7 @@ function send_to_engine() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
 			var json = JSON.parse(xhr.responseText);
 			json=JSON.parse(json);
-			//console.log("Expected word: "+word+", your word: "+json.word);
+			console.log("Expected word: "+word+", your word: "+json.word);
 			//if(word==json.word){
 			if(json.correct==1){
 				$(".success").show().delay(500).fadeOut();
