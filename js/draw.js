@@ -4,10 +4,25 @@
 // Variables to keep track of the mouse position and left-button status
 //todo: make a db
 
-db_QUIZ=[{word_ru:"КОРОВА",word_en:"COW",img: "cow.jpg"},
-		 {word_ru:"АББА",word_en:"ABBA",img: "abba.png"},
-		 {word_ru:"НОГА",word_en:"LEG",img: "leg.jpg"},
-		 {word_ru:"КОТ",word_en:"CAT",img: "cat.jpg"}];
+// db_QUIZ=[{word_ru:"КОРОВА",word_en:"COW",img: "cow.jpg"},
+// 		 {word_ru:"АББА",word_en:"ABBA",img: "abba.png"},
+// 		 {word_ru:"НОГА",word_en:"LEG",img: "leg.jpg"},
+// 		 {word_ru:"КОТ",word_en:"CAT",img: "cat.jpg"}];
+
+var db_QUIZ=[];
+
+function initQuiz(){
+	$.ajax({
+		type: "POST",
+		url: "db_connect.php",
+	}).done(function (o) {
+		db_QUIZ=JSON.parse(o);
+		//console.log(db_QUIZ);	
+		//init first word 
+		showWordByIndex(0);
+		$("#db-length").html(db_QUIZ.length);	
+	});
+}
 
 
 var mouseX, mouseY, mouseDown = 0;
@@ -90,6 +105,7 @@ function clearDrawingArea(){
 //Initiation of the drawing area
 function init() {
 
+	initQuiz();
 	//generate Random letter
 	//generateLetter();
 	// Get the specific canvas element from the HTML document
@@ -135,12 +151,7 @@ function init() {
 			// Prevent a scrolling action as a result of this touchmove triggering.
 			event.preventDefault();
 		});
-	}
-
-	//init first word 
-	showWordByIndex(0);
-	$("#db-length").html(db_QUIZ.length);
-	
+	}	
 }
 function validate_and_save() {
 	if ($("#draw-letter-area svg").html() != "") {
