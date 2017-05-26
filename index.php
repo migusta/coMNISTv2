@@ -12,7 +12,6 @@
 	$stmt->execute(array(":user_id"=>$user_id));
 	
 	$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
-
 ?>  
 
 <!DOCTYPE html">
@@ -26,25 +25,15 @@
     <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<link href="https://fonts.googleapis.com/css?family=Barrio" rel="stylesheet">
-	<script type="text/javascript" src="js/rgbcolor.js"></script>
-	<script type="text/javascript" src="js/StackBlur.js"></script>
-	<script type="text/javascript" src="js/canvg.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/draw.js?v=1.91"></script>
-	<link href="css/main.css?v=1.5" rel="stylesheet"></link>
+	<script src="js/draw.js?v=1.94"></script>
+	<link href="css/main.css?v=1.51" rel="stylesheet"></link>
 </head>
 
 <body>
-	<script type="text/javascript">		
-	$(document).ready(
-			function () {
-				init();
-			}
-		)
-	</script>
 	<div class="wrap">
 		<div class="content">
-        <nav class="navbar navbar-default navbar-fixed-top">
+        <nav class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -77,53 +66,67 @@
             </nav>
 
 
-    <div class="clearfix"></div>
+    <!--<div class="clearfix"></div>-->
     	
-    
+    <div class="container">
+		<div class="page-header">Your lessons</div>
+		<ul class="nav nav-tabs">
+			<li role="presentation" class="active"><a href="javascript:activateTab('all')">All</a></li>
+			<li role="presentation"><a href="javascript:activateTab('active')">Active</a></li>
+			<li role="presentation"><a href="javascript:activateTab('finished')">Finished</a></li>
+		</ul>
+		<div class="lessons-wrap">
+			<?php
 
-			<div class="my-container" id="draw-container">
-				<div class="with-small-padding"> <span class="en_info">What you see on the picture?</span></div>
-				<div class="success">Great job!</div>
-				<div>
-					Your score: <span id="user-score">0</span>/<span id="db-length"></span>
-				</div>
-				<div>Change language:
-					<select id="quiz-lang" onchange="changeLanguage(this.value)">
-						<option selected value="en">English</option>
-						<option  value="ru">Russian</option>
-					</select>
-				</div>
-				<div id="current-word" word="" >
-					<img src=""/>
-				</div>
-				<div id="draw-letter-area">
-					<svg></svg>
-					<img src="" id="result-image"/>		
-				</div>
-				<div class="clear"></div>
-				<input type="button" value="Erase" id="clearbutton" onclick="clearDrawingArea()" class="main-button"/>
-				<input type="button" value="Retry" id="retrybutton" onclick="retryDrawing()" class="main-button"/>
+				//текущие уроки
+				$stmt = $auth_user->runQuery("SELECT * FROM `actions` INNER JOIN lessons ON actions.lessonid=lessons.id WHERE userid=:user_id AND finished=0 ORDER BY lessons.id DESC");
+				$stmt->execute(array(":user_id"=>$user_id));
+				$active_lesson_num=0;
 				
-				<input type="button" value="Submit" id="submitbutton" onclick="validate_and_save()" class="main-button">
+				while ($lessonRow = $stmt->fetch(PDO::FETCH_ASSOC))
+				{
+					?>
+					<div class="active lesson">
+					<?php 
+					// echo "<div ".$class.">";
+					echo $lessonRow['title'];
+					?>
+					<a class="btn btn-default" href="lesson.php?lessonid=<?php echo $lessonRow['id'];?>" role="button">Go</a>
+					
+					</div>
+				<?php	
+					$active_lesson_num=count($lessonRow["id"]); //убрать
+				}	
 				
-				<input type="button" value="Next" id="nextbutton" onclick="showNextImage()" class="main-button">
-
-				<div class="clear"></div>
-				
-			</div>
-			<div id="finish-container" class="my-container">
-				The game is finished.
-			</div>
-			
-			
-			<canvas id="canvas" height="240" width="450"/>
-		</div>
-		<div class="footer">
-			<div class="my-container">
-				Powered by <a href ="http://github.com/GregVial/CoMNIST"><img src="images/logo-sm.png" height="40px" class="logo-cmnst" /></a>
-			</div>
-		</div>
+				//законченные уроки 
+				$stmt = $auth_user->runQuery("SELECT * FROM `actions` INNER JOIN lessons ON actions.lessonid=lessons.id WHERE userid=:user_id AND finished=1 ORDER BY lessons.id DESC");
+				$stmt->execute(array(":user_id"=>$user_id));
+				//echo $active_lesson_num;
+				while ($lessonRow = $stmt->fetch(PDO::FETCH_ASSOC))
+				{
+					// if 
+					// $class = ($lessonRow['finished']!=1) ? 'class="active lesson"' : 'class="finished lesson"';
+				//	echo $active_lesson_num;
+					if ($active_lesson_num===0){  
+						
+					?>
+						<a class="btn btn-default" href="lesson.php?lessonid=<?php echo $lessonRow['next_id'];?>" role="button">Next Lesson</a>				
+					<?php $active_lesson_num=1; //todo: убрать
+					 } ?>
+				    <div class="finished lesson">
+					<?php 
+					// echo "<div ".$class.">";
+					echo $lessonRow['title'];
+					if ($lessonRow['finished']!='1') {?>
+						<a class="btn btn-default" href="lesson.php?lessonid=<?php echo $lessonRow['id'];?>" role="button">Go</a>
+					<?php } ?>
+					</div>
+				<?php	
+				}
+			?>
+		<div>
 	</div>
+
 	<script>
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

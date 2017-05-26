@@ -265,3 +265,16 @@ body{
 h1{
 	font-family:Verdana, Geneva, sans-serif;
 }
+#finish-container{
+    width:500px;
+    margin:0 auto;
+    margin-top:100px;
+}
+.lesson{
+    padding-top:15px;
+}
+.lessons-wrap{
+   border:1px rgb(221, 221, 221) solid;
+   border-top:none;
+   padding:15px;
+}

@@ -11,20 +11,17 @@
 
 var db_QUIZ=[];
 
-function initQuiz(db_QUIZ){
-	// $.ajax({
-	// 	type: "POST",
-	// 	url: "db_connect.php",
-	// 	data: {
-	// 		userId: sUser
-	// 	}
-	// }).done(function (o) {
-		//db_QUIZ=JSON.parse(db_QUIZ);
+function initQuiz(){
+	$.ajax({
+		type: "POST",
+		url: "db_connect.php",
+	}).done(function (o) {
+		db_QUIZ=JSON.parse(o);
 		//console.log(db_QUIZ);	
 		//init first word 
 		showWordByIndex(0);
 		$("#db-length").html(db_QUIZ.length);	
-	// });
+	});
 }
 
 
@@ -106,9 +103,9 @@ function clearDrawingArea(){
 }
 
 //Initiation of the drawing area
-function init(db_QUIZ) {
+function init() {
 
-	initQuiz(db_QUIZ);
+	initQuiz();
 	//generate Random letter
 	//generateLetter();
 	// Get the specific canvas element from the HTML document
@@ -252,38 +249,18 @@ function showWordByIndex(index){
 		}
 		$("#current-word img").attr("src","images/"+db_QUIZ[index].img);	
 	}
-	//else {
-	if (db_QUIZ.length==index+1){
-		//$("#draw-container").hide();
-		$("#nextbutton").attr("disabled","disabled").hide();
-		$("#finish-container").show();
-	}
-	if (db_QUIZ.length==index){
+	else {
 		$("#draw-container").hide();
+		$("#nextbutton").attr("disabled","disabled");
+		$("#finish-container").show();
+
 	}
 }
 
 function addUserScore(){
 	var curscore=parseInt($("#user-score").html());
 	$("#user-score").html(curscore+1);
-	$("#hid-score").val(curscore+1);
-	
 }
-function activateTab(sClass){
-	$(".nav-tabs li.active").removeClass("active");		
-	$(".nav-tabs a").each(function(){
-		if($(this).text().toLowerCase()==sClass) 
-			$(this).parent().addClass("active");}
-	);
-
-	
-	if(sClass=="all") $(".lesson").show();
-	else {
-			$(".lesson").hide();
-			$("."+sClass).show();
-		}
-}
-
 
 function changeLanguage(lang)
 {
@@ -293,3 +270,16 @@ function changeLanguage(lang)
 			case "en": $("#current-word").attr({"word":db_QUIZ[index].word_en});break;
 		}
 }
+
+// function enableControls(){
+// 	$("#submitbutton").removeAttr("disabled");
+// 	$("#clearbutton").removeAttr("disabled");
+// 	$("#finishbutton").removeAttr("disabled");
+// }
+
+//*******************************************************
+//Block that contains functions to validate and send user data
+//*******************************************************
+
+
+
