@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 11 2017 г., 21:51
+-- Время создания: Май 26 2017 г., 15:25
 -- Версия сервера: 5.7.17
 -- Версия PHP: 5.6.30
 
@@ -25,6 +25,50 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Структура таблицы `actions`
+--
+
+CREATE TABLE `actions` (
+  `id` int(11) NOT NULL,
+  `userid` int(11) NOT NULL,
+  `lessonid` int(11) NOT NULL,
+  `finished` tinyint(1) DEFAULT NULL,
+  `score` int(11) DEFAULT '0'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Дамп данных таблицы `actions`
+--
+
+INSERT INTO `actions` (`id`, `userid`, `lessonid`, `finished`, `score`) VALUES
+(1, 1, 1, 1, NULL),
+(3, 2, 1, 1, NULL),
+(16, 1, 2, 1, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `lessons`
+--
+
+CREATE TABLE `lessons` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `title` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
+  `next_id` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Дамп данных таблицы `lessons`
+--
+
+INSERT INTO `lessons` (`id`, `title`, `next_id`) VALUES
+(1, 'First lesson', 2),
+(2, 'Second lesson', 3),
+(3, 'Third lesson', NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Структура таблицы `users`
 --
 
@@ -39,6 +83,11 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 --
 
+INSERT INTO `users` (`user_id`, `user_name`, `user_email`, `user_pass`) VALUES
+(1, 'anna', 'anuta04@yandex.ru', '$2y$10$3z59cmDYamlsxXr8rfVgbOSuTr4DhMmDF7o5XP7XVtWhpOFWTiZUm'),
+(2, 'beta', 's@ya.ru', '$2y$10$qYdjru94i8o6rH4xVVH7O.9SlJgfmaE.16CD/OQtDljOjblqYLfKi');
+
+-- --------------------------------------------------------
 
 --
 -- Структура таблицы `words`
@@ -48,22 +97,38 @@ CREATE TABLE `words` (
   `id` int(10) UNSIGNED NOT NULL,
   `word_en` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
   `word_ru` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `img` text COLLATE utf8_unicode_ci
+  `img` text COLLATE utf8_unicode_ci,
+  `lessonid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Дамп данных таблицы `words`
 --
 
-INSERT INTO `words` (`id`, `word_en`, `word_ru`, `img`) VALUES
-(1, 'COW', 'КОРОВА', 'cow.jpg'),
-(2, 'ABBA', 'АББА', 'abba.png'),
-(3, 'LEG', 'НОГА', 'leg.jpg'),
-(4, 'CAT', 'КОТ', 'cat.jpg');
+INSERT INTO `words` (`id`, `word_en`, `word_ru`, `img`, `lessonid`) VALUES
+(1, 'COW', 'КОРОВА', 'cow.jpg', 1),
+(2, 'ABBA', 'АББА', 'abba.png', 1),
+(3, 'LEG', 'НОГА', 'leg.jpg', 2),
+(4, 'CAT', 'КОТ', 'cat.jpg', 2);
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `actions`
+--
+ALTER TABLE `actions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userid` (`userid`),
+  ADD KEY `lessonid` (`lessonid`);
+
+--
+-- Индексы таблицы `lessons`
+--
+ALTER TABLE `lessons`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_lesson` (`next_id`);
 
 --
 -- Индексы таблицы `users`
@@ -77,22 +142,43 @@ ALTER TABLE `users`
 -- Индексы таблицы `words`
 --
 ALTER TABLE `words`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_lesson` (`lessonid`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
 --
+-- AUTO_INCREMENT для таблицы `actions`
+--
+ALTER TABLE `actions`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+--
+-- AUTO_INCREMENT для таблицы `lessons`
+--
+ALTER TABLE `lessons`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT для таблицы `words`
 --
 ALTER TABLE `words`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;COMMIT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+--
+-- Ограничения внешнего ключа сохраненных таблиц
+--
+
+--
+-- Ограничения внешнего ключа таблицы `words`
+--
+ALTER TABLE `words`
+  ADD CONSTRAINT `fk_lesson` FOREIGN KEY (`lessonid`) REFERENCES `lessons` (`id`) ON DELETE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
