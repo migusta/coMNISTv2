@@ -123,7 +123,14 @@
 					</div>
 				<?php	
 				}
-			?>
+				
+				if (count($lessonRow["id"])===0 and $active_lesson_num===0 ){
+						
+				echo "Welcome to Learn2Write"?>
+
+				<a class="btn btn-default" href="lesson.php?lessonid=1" role="button">Start</a>	
+				<?php } ?>
+		
 		<div>
 	</div>
 
