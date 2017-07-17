@@ -11,20 +11,17 @@
 
 var db_QUIZ=[];
 
-function initQuiz(db_QUIZ){
-	// $.ajax({
-	// 	type: "POST",
-	// 	url: "db_connect.php",
-	// 	data: {
-	// 		userId: sUser
-	// 	}
-	// }).done(function (o) {
-		//db_QUIZ=JSON.parse(db_QUIZ);
-		//console.log(db_QUIZ);	
-		//init first word 
+function initQuiz(){
+	$.ajax({
+		type: "POST",
+		url: "getwords.php"
+	}).done(function (o) {
+		db_QUIZ=JSON.parse(o);
+		console.log(db_QUIZ);	
+		// init first word 
 		showWordByIndex(0);
 		$("#db-length").html(db_QUIZ.length);	
-	// });
+	});
 }
 
 
@@ -106,11 +103,15 @@ function clearDrawingArea(){
 }
 
 //Initiation of the drawing area
-function init(db_QUIZ) {
+function init() {
 
-	initQuiz(db_QUIZ);
+	initQuiz();
 	//generate Random letter
 	//generateLetter();
+	initSvg();	
+}
+
+function initSvg(){
 	// Get the specific canvas element from the HTML document
 	svg = $("#draw-letter-area svg");
 
@@ -154,18 +155,19 @@ function init(db_QUIZ) {
 			// Prevent a scrolling action as a result of this touchmove triggering.
 			event.preventDefault();
 		});
-	}	
+	}
 }
-function validate_and_save() {
+function validate_and_save(isPractice,actionid) {
 	if ($("#draw-letter-area svg").html() != "") {
-		send_to_engine();
+		send_to_engine(isPractice,actionid);
 	} else {
 		alert("You didn't draw anything")
 	}
 }
 
+
 //Save svg to image function
-function send_to_engine() {
+function send_to_engine(isPractice,actionid) {
 	
 	//disable buttons to prevent user double click
 
@@ -204,11 +206,16 @@ function send_to_engine() {
 			json=JSON.parse(json);
 			console.log("Expected word: "+word+", your word: "+json.word);
 			//if(word==json.word){
+				
 			if(json.correct==1){
 				$(".success").show().delay(500).fadeOut();
-
-				addUserScore();
-				showNextImage();
+				if (isPractice==true){
+					addUserScore();
+					showNextImage();
+				}
+				else{
+					redirectToPractice(actionid);
+				}
 			}
 			else{
 			$("#result-image").attr("src","data:image/png;base64,"+json.img);
@@ -224,6 +231,18 @@ function send_to_engine() {
 	var data = JSON.stringify({"img":dataURL,"word":word, "lang":lang, "nb_output":2});
 	xhr.send(data);
 	
+}
+function redirectToPractice(actionid){
+	$.ajax({
+		type: "POST",
+		url: "finishlesson.php",
+		data: {actionid: actionid}
+	}).done(function (o) {
+		console.log(o);
+		document.location='practice.php?lessonid='+o;
+	
+	});
+	//document.location="practice.php?lessonid="+lessonid;
 }
 
 function enableDrawingControls(){
@@ -253,16 +272,34 @@ function showWordByIndex(index){
 		$("#current-word img").attr("src","images/"+db_QUIZ[index].img);	
 	}
 	//else {
-	if (db_QUIZ.length==index+1){
-		//$("#draw-container").hide();
-		$("#nextbutton").attr("disabled","disabled").hide();
-		$("#finish-container").show();
-	}
 	if (db_QUIZ.length==index){
-		$("#draw-container").hide();
+		//$("#draw-container").hide();
+		// $("#nextbutton").attr("disabled","disabled").hide();		 
+		 
+		if($("#hid-score").val()<3) {initQuiz();
+		}
+		else {
+			finishPractice();
+		}
 	}
+	// if (db_QUIZ.length==index){
+	// 	$("#draw-container").hide();
+	// }
 }
+function finishPractice(){
+	
+	$.ajax({
+		type: "POST",
+		url: "finishPractice.php",
+		data: {actionid: $("#hid-action").val(),
+			 score: $("#hid-score").val()}
+	}).done(function (o) {
+		console.log(o);
+		document.location='lesson.php?lessonid='+o;
+	
+	});
 
+}
 function addUserScore(){
 	var curscore=parseInt($("#user-score").html());
 	$("#user-score").html(curscore+1);

@@ -1,4 +1,5 @@
 ﻿<?php
+
 	require_once("session.php");
 	
 	require_once("class.user.php");
@@ -12,32 +13,56 @@
 	
 	$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
 
-
-	//получаем урок
-	$stmt = $auth_user->runQuery("SELECT * from lessons WHERE id=:lesson_id");
-	$stmt->execute(array(":lesson_id"=>$_GET['lessonid']));
-	$lessonRow=$stmt->fetch(PDO::FETCH_ASSOC);
+				//получаем буквы, которые знает пользователь 
+				$stmt = $auth_user->runQuery("SELECT l.id, l.name FROM letters l 
+												INNER JOIN actions a ON a.lessonid=l.id
+												INNER JOIN lessons s
+												ON l.lessonid=s.id
+												WHERE a.userid=:user_id and a.started=1");
+				$stmt->execute(array(":user_id"=>$user_id));
+				$count=$stmt->rowCount();
 	
+	$lessonid = strip_tags($_GET['lessonid']);
+
 	//получаем запись о текущей активности
 	$stmt2=$auth_user->runQuery("SELECT * from actions WHERE lessonid=:lesson_id AND userid=:userid");
-	$stmt2->execute(array(":lesson_id"=>$_GET['lessonid'],":userid"=>$user_id));
+	$stmt2->execute(array(":lesson_id"=>$lessonid,":userid"=>$user_id));
 	$actionsRow=$stmt2->fetch(PDO::FETCH_ASSOC);
 	$actionid=$actionsRow["id"];
 	
-	//если записи нет,то создаем новую
-	if (count($actionsRow["id"])===0){
+	
+				//получаем запрос для слов из известных букв
+				// $sql="SELECT word_en, word_ru, img FROM words WHERE ";
+				
+				// $counter=0;
+				
+				// while ($lettersRow=$stmt->fetch(PDO::FETCH_ASSOC)) {
+				// 	$sql=$sql." word_en REGEXP '".$lettersRow["name"]."'";	
+				// 	++$counter;
+				// 	if($counter!=$count) $sql=$sql." AND ";
+				// }
+				// $sql=$sql."ORDER BY RAND() LIMIT 3";
+				// //получаем слова 
+				// $stmt = $auth_user->runQuery($sql);
+				// $stmt->execute();
+				
+
+
+	// if(isset($_POST['btn-finish']))
+	// {
+	// 	$score = strip_tags($_POST['txt_score']);
+	// 	$actionid = strip_tags($actionid);
+		
 			
-		$id = strip_tags($user_id);
-		$lessonid = strip_tags($_GET['lessonid']);
-		if($newid=$auth_user->startLesson($id,$lessonid))
-		{
-			$actionid=$newid; //todo: возвращать новый ид
-		}
-		else
-		{
-			$error = "Wrong Details !";
-		}	
-	}
+	// 	if($auth_user->finishLesson($actionid,$score))		
+	// 	{
+	// 		$auth_user->redirect('index.php');
+	// 	}
+	// 	else
+	// 	{
+	// 		$error = "Wrong Details !";
+	// 	}	
+	// }
 ?>  
 
 <!DOCTYPE html">
@@ -55,15 +80,15 @@
 	<script type="text/javascript" src="js/StackBlur.js"></script>
 	<script type="text/javascript" src="js/canvg.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/draw.js?v=1.97"></script>
-	<link href="css/main.css?v=1.5" rel="stylesheet"></link>
+	<script src="js/draw.js?v=1.52"></script>
+	<link href="css/main.css?v=1.7" rel="stylesheet"></link>
 </head>
 
 <body>
 	<script type="text/javascript">		
 	$(document).ready(	
 			function () {
-				initSvg();
+				init();
 			}
 		)
 	</script>
@@ -81,11 +106,6 @@
 				<a href ="https://github.com/migusta/CoMNISTv2"><img src="images/learn2write.png" height="50px" class="logo" /></a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
-                <!--<ul class="nav navbar-nav">
-                    <li class="active"><a href="http://www.codingcage.com/2015/04/php-login-and-registration-script-with.html">Back to Article</a></li>
-                    <li><a href="http://www.codingcage.com/search/label/jQuery">jQuery</a></li>
-                    <li><a href="http://www.codingcage.com/search/label/PHP">PHP</a></li>
-                </ul>-->
                 <ul class="nav navbar-nav navbar-right">
                     
                     <li class="dropdown">
@@ -107,19 +127,19 @@
     
 
 			<div class="my-container" id="draw-container">
-				<div class="with-small-padding"> <span class="en_info">Write "OK" in the drawing area to move further</span></div>
-				<!--<div>
+				<div class="with-small-padding"> <span class="en_info">What you see on the picture?</span></div>
+				<div class="success">Great job!</div>
+				<div>
 					Your score: <span id="user-score">0</span>/<span id="db-length"></span>
-				</div>-->
-				<!--todo: language from db-->
+				</div>
 				<div>Change language:
 					<select id="quiz-lang" onchange="changeLanguage(this.value)">
 						<option selected value="en">English</option>
 						<option  value="ru">Russian</option>
 					</select>
 				</div>
-				<div id="current-word" word="OK" >
-					<img src="images/<?php echo $lessonRow['img']; ?>"/>
+				<div id="current-word" word="" >
+					<img src=""/>
 				</div>
 				<div id="draw-letter-area">
 					<svg></svg>
@@ -129,19 +149,34 @@
 				<input type="button" value="Erase" id="clearbutton" onclick="clearDrawingArea()" class="main-button"/>
 				<input type="button" value="Retry" id="retrybutton" onclick="retryDrawing()" class="main-button"/>
 				
-				<input type="button" value="Submit" id="submitbutton" onclick="validate_and_save(false,<?php echo $actionid?>)" class="main-button">
-				<!--<input type="button" value="Next" id="nextbutton" onclick="showNextImage()" class="main-button">-->
+				<input type="button" value="Submit" id="submitbutton" onclick="validate_and_save(true)" class="main-button">
+				<input type="button" value="Next" id="nextbutton" onclick="showNextImage()" class="main-button">
+				<input type="button" value="Finish" id="finishbutton" onclick="finishPractice()" class="main-button">
+				
+				<input type="button" value="Restart practice" id="restartbutton" onclick="initQuizz()" class="main-button">
 
 				<div class="clear"></div>
+				<input type="hidden" class="form-control" name="txt_score" id="hid-score" value="0"/>
+				<input type="hidden" class="form-control" id="hid-action" value="<?php echo $actionid  ?>"/>
 				
 			</div>
-			 <form class="form-finish" method="post" id="finish-container">
-					<input type="hidden" class="form-control" name="txt_score" id="hid-score" value="0"/>
+			 <!--<form class="form-finish" method="post" id="finish-container">
+					
 					<button type="submit" name="btn-finish" class="btn btn-default">
 						<i class="glyphicon glyphicon-log-in"></i> &nbsp; Finish
 					</button>
+			</form>-->
+			<!--<div id="finish-container" class="my-container">
+				The game is finished.Click <a href='/'>here<a> to return to lessons
+			</div>-->
+			
 			<canvas id="canvas" height="240" width="448"/>
 		</div>
+		<!--<div class="footer">
+			<div class="my-container">
+				Powered by <a href ="http://github.com/GregVial/CoMNIST"><img src="images/logo-sm.png" height="40px" class="logo-cmnst" /></a>
+			</div>
+		</div>-->
 	</div>
 	<script>
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -151,6 +186,7 @@
 
 		ga('create', 'UA-86523398-3', 'auto');
 		ga('send', 'pageview');
+
 	</script>
 </body>
 

@@ -73,6 +73,7 @@
 		<ul class="nav nav-tabs">
 			<li role="presentation" class="active"><a href="javascript:activateTab('all')">All</a></li>
 			<li role="presentation"><a href="javascript:activateTab('active')">Active</a></li>
+			
 			<li role="presentation"><a href="javascript:activateTab('finished')">Finished</a></li>
 		</ul>
 		<div class="lessons-wrap">
@@ -95,12 +96,13 @@
 					
 					</div>
 				<?php	
-					$active_lesson_num=count($lessonRow["id"]); //убрать
+					$active_lesson_num=$stmt->rowCount(); 
 				}	
 				
 				//законченные уроки 
 				$stmt = $auth_user->runQuery("SELECT * FROM `actions` INNER JOIN lessons ON actions.lessonid=lessons.id WHERE userid=:user_id AND finished=1 ORDER BY lessons.id DESC");
 				$stmt->execute(array(":user_id"=>$user_id));
+				$count=$stmt->rowCount(); 
 				//echo $active_lesson_num;
 				while ($lessonRow = $stmt->fetch(PDO::FETCH_ASSOC))
 				{
@@ -117,9 +119,9 @@
 					<?php 
 					// echo "<div ".$class.">";
 					echo $lessonRow['title'];
-					if ($lessonRow['finished']!='1') {?>
-						<a class="btn btn-default" href="lesson.php?lessonid=<?php echo $lessonRow['id'];?>" role="button">Go</a>
-					<?php } ?>
+					// if ($lessonRow['finished']!='1') {?>
+					<a class="btn btn-default" href="lesson.php?lessonid=<?php echo $lessonRow['id'];?>" role="button">Go</a>
+					
 					</div>
 				<?php	
 				}

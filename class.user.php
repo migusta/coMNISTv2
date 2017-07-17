@@ -68,7 +68,27 @@ class USER
 			echo $e->getMessage();
 		}				
 	}
-	 
+	 public function finishPractice($actionid,$score)
+	{
+		try
+		{
+			
+			$stmt = $this->conn->prepare("UPDATE  `actions` SET `finished`=1, `score`=:score
+		                                   WHERE id=:actionid");
+												  
+			$stmt->bindparam(":score", $score);
+			$stmt->bindparam(":actionid", $actionid);
+			
+			$stmt->execute();	
+			
+			return $stmt;	
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}				
+	}
+
 	public function startLesson($id,$lessonid)
 	{
 		try
@@ -79,6 +99,29 @@ class USER
 												  
 			$stmt->bindparam(":id", $id);
 			$stmt->bindparam(":lessonid", $lessonid);			
+				
+			$stmt->execute();
+			$id = $this->conn->lastInsertId();
+	
+			return $id;	
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}				
+	}
+
+
+	public function GoToPractice($id)
+	{
+		try
+		{
+			
+			$stmt = $this->conn->prepare("UPDATE `actions`
+		                                       SET `started`=1 WHERE id=:actionid");
+												  
+			$stmt->bindparam(":actionid", $id);
+						
 				
 			$stmt->execute();
 			$id = $this->conn->lastInsertId();

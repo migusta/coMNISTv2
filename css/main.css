@@ -270,6 +270,9 @@ h1{
     margin:0 auto;
     margin-top:100px;
 }
+#finishbutton,#restartbutton{
+    display: none;
+}
 .lesson{
     padding-top:15px;
 }
