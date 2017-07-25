@@ -18,12 +18,17 @@ function initQuiz(){
 	}).done(function (o) {
 		db_QUIZ=JSON.parse(o);
 		console.log(db_QUIZ);	
-		// init first word 
-		showWordByIndex(0);
-		$("#db-length").html(db_QUIZ.length);	
+		// init first random word 
+		var index=getRandomInt(0,db_QUIZ.length);
+		showWordByIndex(index);
+	//	$("#db-length").html(db_QUIZ.length);	
+		$("#db-length").html(3);	
 	});
 }
-
+// Возвращает случайное целое число между min (включительно) и max (не включая max)
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
 var mouseX, mouseY, mouseDown = 0;
 // Variables to keep track of the touch position
@@ -218,6 +223,7 @@ function send_to_engine(isPractice,actionid) {
 				}
 			}
 			else{
+			ClearScore();
 			$("#result-image").attr("src","data:image/png;base64,"+json.img);
 			//hide the svg and show img
 			$("#retrybutton").show();
@@ -258,8 +264,25 @@ function showNextImage(){
 	clearDrawingArea();
 	enableDrawingControls();
 	
-	var index=parseInt($("#current-word").attr("index"));
-	showWordByIndex(index+1);
+	// var index=parseInt($("#current-word").attr("index"));
+	// showWordByIndex(index+1);
+	showRandomWord();
+}
+
+
+function showRandomWord(){
+	var index=getRandomInt(0,db_QUIZ.length);
+	var lang=$("#quiz-lang option:selected").val();	
+	if (db_QUIZ.length>index){
+		switch(lang){
+			case "ru": $("#current-word").attr({"word":db_QUIZ[index].word_ru});break;
+			case "en": $("#current-word").attr({"word":db_QUIZ[index].word_en});break;
+		}
+		$("#current-word img").attr("src","images/"+db_QUIZ[index].img);	
+	}
+	if($("#hid-score").val()==3) {
+		finishPractice();
+	}
 }
 
 function showWordByIndex(index){
@@ -299,6 +322,10 @@ function finishPractice(){
 	
 	});
 
+}
+function ClearScore(){
+	$("#user-score").html(0);
+	$("#hid-score").val(0);
 }
 function addUserScore(){
 	var curscore=parseInt($("#user-score").html());

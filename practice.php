@@ -80,7 +80,7 @@
 	<script type="text/javascript" src="js/StackBlur.js"></script>
 	<script type="text/javascript" src="js/canvg.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/draw.js?v=1.52"></script>
+	<script src="js/draw.js?v=1.56"></script>
 	<link href="css/main.css?v=1.7" rel="stylesheet"></link>
 </head>
 

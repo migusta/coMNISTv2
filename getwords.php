@@ -22,7 +22,7 @@
 	$count=$stmt->rowCount();
 	$letters=$stmt->fetchAll();
 	
-	$stmt2 = $auth_user->runQuery("SELECT word_ru,word_en, img FROM words");
+	$stmt2 = $auth_user->runQuery("SELECT word_ru,word_en, img FROM words ORDER BY RAND()");
 	$stmt2->execute(array(":user_id"=>$user_id));
 
 
@@ -61,7 +61,10 @@
 			}
 
 			if ($isKnownWord)
-				array_push($knownWords,$wordRow["word_en"]);
+			{
+				$addedArray = array('word_en' => $wordRow["word_en"],'word_ru' => $wordRow["word_ru"],'img' => $wordRow["img"] ,);
+				array_push($knownWords,$addedArray);
+			}
 		}
 
 		echo  json_encode($knownWords);

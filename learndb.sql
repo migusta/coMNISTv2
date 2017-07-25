@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1
--- Время создания: Май 26 2017 г., 15:25
+-- Время создания: Июл 25 2017 г., 13:25
 -- Версия сервера: 5.7.17
 -- Версия PHP: 5.6.30
 
@@ -33,17 +33,18 @@ CREATE TABLE `actions` (
   `userid` int(11) NOT NULL,
   `lessonid` int(11) NOT NULL,
   `finished` tinyint(1) DEFAULT NULL,
-  `score` int(11) DEFAULT '0'
+  `score` int(11) DEFAULT '0',
+  `started` tinyint(1) DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Дамп данных таблицы `actions`
 --
 
-INSERT INTO `actions` (`id`, `userid`, `lessonid`, `finished`, `score`) VALUES
-(1, 1, 1, 1, NULL),
-(3, 2, 1, 1, NULL),
-(16, 1, 2, 1, 2);
+INSERT INTO `actions` (`id`, `userid`, `lessonid`, `finished`, `score`, `started`) VALUES
+(26, 1, 3, 0, 0, 0),
+(25, 1, 2, 1, 3, 1),
+(23, 1, 1, 1, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -54,17 +55,18 @@ INSERT INTO `actions` (`id`, `userid`, `lessonid`, `finished`, `score`) VALUES
 CREATE TABLE `lessons` (
   `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `next_id` int(11) DEFAULT NULL
+  `next_id` int(11) DEFAULT NULL,
+  `img` text COLLATE utf8_unicode_ci
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Дамп данных таблицы `lessons`
 --
 
-INSERT INTO `lessons` (`id`, `title`, `next_id`) VALUES
-(1, 'First lesson', 2),
-(2, 'Second lesson', 3),
-(3, 'Third lesson', NULL);
+INSERT INTO `lessons` (`id`, `title`, `next_id`, `img`) VALUES
+(1, 'First lesson', 2, 'lesson1.png'),
+(2, 'Second lesson', 3, NULL),
+(3, 'Third lesson', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -109,7 +111,15 @@ INSERT INTO `words` (`id`, `word_en`, `word_ru`, `img`, `lessonid`) VALUES
 (1, 'COW', 'КОРОВА', 'cow.jpg', 1),
 (2, 'ABBA', 'АББА', 'abba.png', 1),
 (3, 'LEG', 'НОГА', 'leg.jpg', 2),
-(4, 'CAT', 'КОТ', 'cat.jpg', 2);
+(4, 'CAT', 'КОТ', 'cat.jpg', 2),
+(5, 'ATOM', 'АТОМ', 'atom.jpg', NULL),
+(6, 'MAKET', 'МАКЕТ', 'maket.jpg', NULL),
+(7, 'BAB', 'БАБ', 'bab.jpg', NULL),
+(8, 'BAABA', 'БААБА', 'baaba.png', NULL),
+(9, 'A', 'A', NULL, NULL),
+(10, 'A', 'A', NULL, NULL),
+(11, 'A', 'A', NULL, NULL),
+(12, 'ABC', 'ABC', NULL, NULL);
 
 --
 -- Индексы сохранённых таблиц
@@ -153,7 +163,7 @@ ALTER TABLE `words`
 -- AUTO_INCREMENT для таблицы `actions`
 --
 ALTER TABLE `actions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT для таблицы `lessons`
 --
@@ -168,7 +178,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `words`
 --
 ALTER TABLE `words`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
