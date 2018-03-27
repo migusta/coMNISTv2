@@ -14,11 +14,11 @@
 	$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
 
 				//получаем буквы, которые знает пользователь 
-				$stmt = $auth_user->runQuery("SELECT l.id, l.name FROM letters l 
-												INNER JOIN actions a ON a.lessonid=l.id
-												INNER JOIN lessons s
-												ON l.lessonid=s.id
-												WHERE a.userid=:user_id and a.started=1");
+
+				$stmt = $auth_user->runQuery("SELECT l.id, l.name FROM actions a 
+						JOIN lessons s ON s.id=a.lessonid 
+						JOIN letters l ON l.lessonid = a.lessonid
+						WHERE a.userid=:user_id and a.started=1");
 				$stmt->execute(array(":user_id"=>$user_id));
 				$count=$stmt->rowCount();
 	
@@ -80,15 +80,16 @@
 	<script type="text/javascript" src="js/StackBlur.js"></script>
 	<script type="text/javascript" src="js/canvg.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/draw.js?v=1.56"></script>
-	<link href="css/main.css?v=1.7" rel="stylesheet"></link>
+	<script src="js/draw.js"></script>
+	<link href="css/main.css?v=1.71" rel="stylesheet"></link>
 </head>
 
 <body>
 	<script type="text/javascript">		
 	$(document).ready(	
 			function () {
-				init();
+				var lessonid=<?php echo $lessonid ?>;
+				init(lessonid);
 			}
 		)
 	</script>
@@ -127,6 +128,7 @@
     
 
 			<div class="my-container" id="draw-container">
+				<div class="with-small-padding" id="fin_practice" style="display: none"> Great job! You will be redirected, please, wait  ... </div>
 				<div class="with-small-padding"> <span class="en_info">What you see on the picture?</span></div>
 				<div class="success">Great job!</div>
 				<div>

@@ -13,18 +13,24 @@
 	$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
 
 	//получаем буквы, которые знает пользователь 
-	$stmt = $auth_user->runQuery("SELECT l.id, l.name FROM letters l 
-									INNER JOIN actions a ON a.lessonid=l.id
-									INNER JOIN lessons s
-									ON l.lessonid=s.id
-									WHERE a.userid=:user_id and a.started=1");
+	/* $stmt = $auth_user->runQuery("SELECT l.id, l.name FROM letters l 
+	  								INNER JOIN actions a ON a.lessonid=l.id
+	  								INNER JOIN lessons s
+	  								ON l.lessonid=s.id
+	 								WHERE a.userid=:user_id and a.started=1");*/
+
+	$lesson_id = strip_tags($_GET['lessonid']);
+
+	$stmt = $auth_user->runQuery("SELECT l.id,l.name FROM letters l 
+								INNER JOIN lessons s ON l.lessonid=s.id
+								INNER JOIN actions a ON a.lessonid=s.id
+								WHERE a.userid=:user_id and a.started=1");
 	$stmt->execute(array(":user_id"=>$user_id));
 	$count=$stmt->rowCount();
 	$letters=$stmt->fetchAll();
 	
 	$stmt2 = $auth_user->runQuery("SELECT word_ru,word_en, img FROM words ORDER BY RAND()");
 	$stmt2->execute(array(":user_id"=>$user_id));
-
 
 	$knownWords=[];
 
@@ -67,7 +73,31 @@
 			}
 		}
 
-		echo  json_encode($knownWords);
+			//последняя выученная буква
+		$stmt3 = $auth_user->runQuery("SELECT l.id,l.name FROM letters l 
+										INNER JOIN lessons s ON l.lessonid=s.id
+										WHERE  s.id=:lesson_id");
+		$stmt3->execute(array(":lesson_id"=>$lesson_id));
+		$lessonLetters=$stmt3->fetch(PDO::FETCH_ASSOC);
+		//если буква одна (урок не первый)
+		if($stmt3->rowCount()==1) {
+			$last_letter = strval($lessonLetters["name"]);
+			$filterArray = array_values(array_filter($knownWords,
+										function ($var) use ($last_letter)  {	
+											if(stripos($var["word_en"], $last_letter)!== false)
+											 	return $var;
+										}
+									));
+
+			echo  json_encode($filterArray);
+		}
+		else {
+			echo  json_encode($knownWords);
+		}
+
+
+		
+		
 		
 
 

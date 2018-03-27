@@ -55,8 +55,8 @@
 	<script type="text/javascript" src="js/StackBlur.js"></script>
 	<script type="text/javascript" src="js/canvg.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
-	<script src="js/draw.js?v=1.97"></script>
-	<link href="css/main.css?v=1.5" rel="stylesheet"></link>
+	<script src="js/draw.js"></script>
+	<link href="css/main.css?v=1.53" rel="stylesheet"></link>
 </head>
 
 <body>

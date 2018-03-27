@@ -10,8 +10,40 @@
 	
 	$stmt = $auth_user->runQuery("SELECT * FROM users WHERE user_id=:user_id");
 	$stmt->execute(array(":user_id"=>$user_id));
+
+	$stmt2 = $auth_user->runQuery("SELECT * FROM lessons ");
+	$stmt2->execute();
+
+	$stmt3 = $auth_user->runQuery("SELECT * FROM languages ");
+	$stmt3->execute();	
 	
 	$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
+
+	if(isset($_POST['new-letter']))
+	{
+		$name = strip_tags($_POST['name']);
+		$languageid = strip_tags($_POST['language']);
+		$lessonid = strip_tags($_POST['lesson']);
+			
+		try
+		{
+			// echo $name." ".$lessonid." ".$languageid;
+			
+			$stmt =$auth_user->runQuery("INSERT INTO `letters`(`name`, `languageid`, `lessonid`) VALUES (:name,:languageid,:lessonid)");
+												  
+			$stmt->bindparam(":name", $name);
+			$stmt->bindparam(":lessonid", $lessonid);
+			$stmt->bindparam(":languageid", $languageid);
+			
+			$stmt->execute();	
+			
+			echo '<div class="alert alert-success">Successfully added letter '.$name.'!</div>';
+		}
+		catch(PDOException $e)
+		{
+			echo $e->getMessage();
+		}			
+	}
 ?>  
 
 <!DOCTYPE html">
@@ -69,83 +101,49 @@
     <!--<div class="clearfix"></div>-->
     	
     <div class="container">
-		<div class="page-header">Your lessons</div>
-		<ul class="nav nav-tabs">
-			<li role="presentation" class="active"><a href="javascript:activateTab('all')">All</a></li>
-			<li role="presentation"><a href="javascript:activateTab('active')">Active</a></li>
-			
-			<li role="presentation"><a href="javascript:activateTab('finished')">Finished</a></li>
-		</ul>
+		<div class2="page-header">Adding new letters</div>
+	
 		<div class="lessons-wrap">
-			<?php
-
-				//текущие уроки
-				$stmt = $auth_user->runQuery("SELECT * FROM `actions` INNER JOIN lessons ON actions.lessonid=lessons.id WHERE userid=:user_id AND finished=0 ORDER BY lessons.id DESC");
-				$stmt->execute(array(":user_id"=>$user_id));
-				$active_lesson_num=0;
-				
-				while ($lessonRow = $stmt->fetch(PDO::FETCH_ASSOC))
-				{
-					?>
-					<div class="active lesson">
-					<?php 
-					// echo "<div ".$class.">";
-					echo $lessonRow['title'];
-					?>
-					<a class="btn btn-default" href="lesson.php?lessonid=<?php echo $lessonRow['id'];?>" role="button">Go</a>
-					
-					</div>
-				<?php	
-					$active_lesson_num=$stmt->rowCount(); 
-				}	
-				
-				//законченные уроки 
-				$stmt = $auth_user->runQuery("SELECT * FROM `actions` INNER JOIN lessons ON actions.lessonid=lessons.id WHERE userid=:user_id AND finished=1 ORDER BY lessons.id DESC");
-				$stmt->execute(array(":user_id"=>$user_id));
-				$count=$stmt->rowCount(); 
-				//echo $active_lesson_num;
-				while ($lessonRow = $stmt->fetch(PDO::FETCH_ASSOC))
-				{
-					// if 
-					// $class = ($lessonRow['finished']!=1) ? 'class="active lesson"' : 'class="finished lesson"';
-				//	echo $active_lesson_num;
-					if ($active_lesson_num===0){  
+		<form method="post">
+		 <div class="form-group">
+			<input type="text" class="form-control" name="name" placeholder="Letter" required />
+        </div>
+		<div class="form-group">
+			   	<select class="form-control" name="lesson">
+				<?php 
+					while ($lessonRow = $stmt2->fetch(PDO::FETCH_ASSOC))
+					{
+						echo "<option value=".$lessonRow["id"].">";
+						echo $lessonRow["title"];
+						echo "</option>";
 						
-					?>
-						<a class="btn btn-default" href="lesson.php?lessonid=<?php echo $lessonRow['next_id'];?>" role="button">Next Lesson</a>				
-					<?php $active_lesson_num=1; //todo: убрать
-					 } ?>
-				    <div class="finished lesson">
-					<?php 
-					// echo "<div ".$class.">";
-					echo $lessonRow['title'];
-					// if ($lessonRow['finished']!='1') {?>
-					<a class="btn btn-default" href="lesson.php?lessonid=<?php echo $lessonRow['id'];?>" role="button">Go</a>
+					}
+			  	?>
+				</select>
+        </div>
+		<div class="form-group">
+			 <select class="form-control" name="language">
+			 <?php 
+			 	while ($languageRow = $stmt3->fetch(PDO::FETCH_ASSOC))
+				{
+					echo "<option value=".$languageRow["id"].">";
+					echo $languageRow["name"];
+					echo "</option>";
 					
-					</div>
-				<?php	
 				}
-				
-				if (count($lessonRow["id"])===0 and $active_lesson_num===0 ){
-						
-				echo "Welcome to Learn2Write"?>
-
-				<a class="btn btn-default" href="lesson.php?lessonid=1" role="button">Start</a>	
-				<?php } ?>
+			  ?>
+			 </select>
+        </div>
 		
-		<div>
-	</div>
+		<div class="form-group">
+            <button type="submit" class="btn btn-success" name="new-letter">
+                	<i class="glyphicon glyphicon-plus"></i> &nbsp; Add
+            </button>
+        </div>  
+		</form>
+		
+		</div>
 
-	<script>
-		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-		ga('create', 'UA-86523398-3', 'auto');
-		ga('send', 'pageview');
-
-	</script>
 </body>
 
 </html>

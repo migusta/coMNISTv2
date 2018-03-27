@@ -11,10 +11,11 @@
 
 var db_QUIZ=[];
 
-function initQuiz(){
+function initQuiz(lessonid){
+	//console.log(lessonid);
 	$.ajax({
 		type: "POST",
-		url: "getwords.php"
+		url: "getwords.php?lessonid="+lessonid
 	}).done(function (o) {
 		db_QUIZ=JSON.parse(o);
 		console.log(db_QUIZ);	
@@ -103,14 +104,14 @@ function getTouchPos(e) {
 function clearDrawingArea(){
 
 	$('#draw-letter-area svg').empty();
-	$('#result-image').removeAttr("src");
+	$('#result-image').removeAttr("src").hide();
 	
 }
 
 //Initiation of the drawing area
-function init() {
+function init(lessonid) {
 
-	initQuiz();
+	initQuiz(lessonid);
 	//generate Random letter
 	//generateLetter();
 	initSvg();	
@@ -244,7 +245,7 @@ function redirectToPractice(actionid){
 		url: "finishlesson.php",
 		data: {actionid: actionid}
 	}).done(function (o) {
-		console.log(o);
+		// console.log(o);
 		document.location='practice.php?lessonid='+o;
 	
 	});
@@ -310,10 +311,13 @@ function showWordByIndex(index){
 	// }
 }
 function finishPractice(){
+
+	$("#draw-container").hide();
+	$("#fin_practice").show();
 	
 	$.ajax({
 		type: "POST",
-		url: "finishPractice.php",
+		url: "finishpractice.php",
 		data: {actionid: $("#hid-action").val(),
 			 score: $("#hid-score").val()}
 	}).done(function (o) {

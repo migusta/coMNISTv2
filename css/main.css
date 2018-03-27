@@ -127,6 +127,10 @@ input[type='button']{
     background-repeat: no-repeat;
     background-position: 15 0;  
 }
+
+#result-image {
+    display: none;
+}
 .level_0{
     background-image: url('../images/level_0.png')   ;
 }
@@ -203,9 +207,10 @@ select{
 }
 
 }
-@media (min-width: 700px) {
+
+@media (min-width: 800px) {
 .my-container {
-    width: 700px;
+    width: 800px;
 }
 .logo-sm{
     display:none;
